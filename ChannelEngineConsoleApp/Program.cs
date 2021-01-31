@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ChannelEngineCore.Interfaces;
+using ChannelEngineCore.Services;
+using System;
 
 namespace ChannelEngineConsoleApp
 {
@@ -6,6 +8,8 @@ namespace ChannelEngineConsoleApp
     {
         static void Main(string[] args)
         {
+            IRequestHandler requestHandler = new HttpClientRequestHandler();
+            requestHandler.GetOrdersInProgress();
             Console.WriteLine("Hello World!");
         }
     }
