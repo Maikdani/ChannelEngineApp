@@ -10,8 +10,9 @@ namespace ChannelEngineCore.Interfaces
 {
     public interface IRequestHandler
     {
+        string GetOrdersInProgressJSON();
         IEnumerable<Order> GetOrdersInProgress();
-        IEnumerable<Product> GetTopXProductsSold(int topX);
-        HttpResponseMessage PutProduct(JsonPatchDocument<MerchantProduct> patchDoc);
+        IEnumerable<Product> GetTopXProductsSold(int takeCount);
+        HttpResponseMessage PatchProduct(JsonPatchDocument<MerchantProduct> patchDoc, string merchantProductNo);
     }
 }

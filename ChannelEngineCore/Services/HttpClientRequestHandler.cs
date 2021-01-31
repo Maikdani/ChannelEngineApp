@@ -14,13 +14,12 @@ namespace ChannelEngineCore.Services
     public class HttpClientRequestHandler : IRequestHandler
     {
         private static readonly HttpClient _httpClient = new HttpClient();
-        public IEnumerable<Order> GetOrdersInProgress()
+
+        public string GetOrdersInProgressJSON()
         {
             try
             {
-                var response = _httpClient.GetStringAsync(new Uri("https://api-dev.channelengine.net/api/v2/orders?statuses=IN_PROGRESS&apikey=541b989ef78ccb1bad630ea5b85c6ebff9ca3322")).Result;
-                var channelEngineRoot = JsonConvert.DeserializeObject<ChannelEngineRoot>(response);
-                return channelEngineRoot.Content;
+                return _httpClient.GetStringAsync(new Uri("https://api-dev.channelengine.net/api/v2/orders?statuses=IN_PROGRESS&apikey=541b989ef78ccb1bad630ea5b85c6ebff9ca3322")).Result;
             }
             catch (Exception)
             {
@@ -28,7 +27,14 @@ namespace ChannelEngineCore.Services
             }
         }
 
-        public IEnumerable<Product> GetTopXProductsSold(int topX)
+        public IEnumerable<Order> GetOrdersInProgress()
+        {
+            var response = GetOrdersInProgressJSON();
+            var channelEngineRoot = JsonConvert.DeserializeObject<ChannelEngineRoot>(response);
+            return channelEngineRoot.Content;
+        }
+
+        public IEnumerable<Product> GetTopXProductsSold(int takeCount)
         {
             var products = this.GetOrdersInProgress()
                 .SelectMany(order => order.Products)
@@ -37,19 +43,20 @@ namespace ChannelEngineCore.Services
                 {
                     Name = g.Key,
                     GTIN = g.FirstOrDefault()?.GTIN,
-                    Quantity = g.Sum(x => x.Quantity)
+                    Quantity = g.Sum(x => x.Quantity),
+                    MerchantProductNo = g.FirstOrDefault()?.MerchantProductNo
                 })
-                .OrderByDescending(x => x.Quantity);
+                .OrderByDescending(x => x.Quantity)
+                .Take(takeCount);
             return products;
         }
 
-        public HttpResponseMessage PutProduct(JsonPatchDocument<MerchantProduct> patchDoc)
+        public HttpResponseMessage PatchProduct(JsonPatchDocument<MerchantProduct> patchDoc, string merchantProductNo)
         {
-            patchDoc.Replace(p => p.Stock, 5);
             var serializedItemToUpdate = JsonConvert.SerializeObject(patchDoc);
 
             var method = new HttpMethod("PATCH");
-            var request = new HttpRequestMessage(method, new Uri("https://api-dev.channelengine.net/api/v2/products/001201-XL?apikey=541b989ef78ccb1bad630ea5b85c6ebff9ca3322"))
+            var request = new HttpRequestMessage(method, new Uri("https://api-dev.channelengine.net/api/v2/products/" + merchantProductNo + "?apikey=541b989ef78ccb1bad630ea5b85c6ebff9ca3322"))
             {
                 Content = new StringContent(serializedItemToUpdate,
                 Encoding.UTF8, "application/json-patch+json")
