@@ -16,7 +16,6 @@ namespace ChannelEngineConsoleApp
         private static readonly IRequestHandler _requestHandler = new HttpClientRequestHandler();
         static async Task Main(string[] args)
         {
-            Program program = new Program();
             DisplayStart();
 
             while (true)
