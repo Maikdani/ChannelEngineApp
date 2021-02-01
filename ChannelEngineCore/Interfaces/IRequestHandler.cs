@@ -10,6 +10,7 @@ namespace ChannelEngineCore.Interfaces
 {
     public interface IRequestHandler
     {
+        MerchantProduct GetMerchantProduct(string id);
         string GetOrdersInProgressJSON();
         IEnumerable<Order> GetOrdersInProgress();
         IEnumerable<Product> GetTopXProductsSold(int takeCount);

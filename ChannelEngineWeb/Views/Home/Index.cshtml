@@ -1,8 +1,68 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿@model IEnumerable<ChannelEngineWeb.Models.OrderViewmodel>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+@{
+    ViewData["Title"] = "Orders In Progress";
+}
+<h1>@ViewData["Title"]</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ChannelId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.GlobalChannelId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ChannelName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.GlobalChannelName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ChannelOrderSupport)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ChannelOrderNo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ChannelId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.GlobalChannelId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ChannelName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.GlobalChannelName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ChannelOrderSupport)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ChannelOrderNo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

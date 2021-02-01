@@ -1,0 +1,35 @@
+﻿@model ChannelEngineCore.Entities.MerchantProduct
+@{
+    ViewData["Title"] = "PatchProduct";
+}
+
+<h1>Successfully updated stock of Product!</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MerchantProductNo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Stock)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                @Html.DisplayFor(model => model.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.MerchantProductNo)
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.Stock)
+            </td>
+        </tr>
+    </tbody>
+</table>
+

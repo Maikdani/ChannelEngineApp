@@ -4,8 +4,8 @@ using System.Text;
 
 namespace ChannelEngineCore.Entities
 {
-    public class ChannelEngineRoot
+    public class ChannelEngineRoot<T>
     {
-        public List<Order> Content { get; set; }
+        public T Content { get; set; }
     }
 }

@@ -15,6 +15,18 @@ namespace ChannelEngineCore.Services
     {
         private static readonly HttpClient _httpClient = new HttpClient();
 
+        public MerchantProduct GetMerchantProduct(string id)
+        {
+            try
+            {
+                return JsonConvert.DeserializeObject<ChannelEngineRoot<MerchantProduct>>(_httpClient.GetStringAsync(new Uri($"https://api-dev.channelengine.net/api/v2/products/{id}?apikey=541b989ef78ccb1bad630ea5b85c6ebff9ca3322")).Result).Content;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        } 
+
         public string GetOrdersInProgressJSON()
         {
             try
@@ -30,7 +42,7 @@ namespace ChannelEngineCore.Services
         public IEnumerable<Order> GetOrdersInProgress()
         {
             var response = GetOrdersInProgressJSON();
-            var channelEngineRoot = JsonConvert.DeserializeObject<ChannelEngineRoot>(response);
+            var channelEngineRoot = JsonConvert.DeserializeObject<ChannelEngineRoot<List<Order>>>(response);
             return channelEngineRoot.Content;
         }
 
@@ -56,7 +68,7 @@ namespace ChannelEngineCore.Services
             var serializedItemToUpdate = JsonConvert.SerializeObject(patchDoc);
 
             var method = new HttpMethod("PATCH");
-            var request = new HttpRequestMessage(method, new Uri("https://api-dev.channelengine.net/api/v2/products/" + merchantProductNo + "?apikey=541b989ef78ccb1bad630ea5b85c6ebff9ca3322"))
+            var request = new HttpRequestMessage(method, new Uri($"https://api-dev.channelengine.net/api/v2/products/{merchantProductNo}?apikey=541b989ef78ccb1bad630ea5b85c6ebff9ca3322"))
             {
                 Content = new StringContent(serializedItemToUpdate,
                 Encoding.UTF8, "application/json-patch+json")

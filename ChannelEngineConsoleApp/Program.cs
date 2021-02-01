@@ -88,6 +88,11 @@ namespace ChannelEngineConsoleApp
                 var merchantProductNo = products.ElementAt(selectedOption - 1)?.MerchantProductNo;
                 var response = _requestHandler.PatchProduct(patchDoc, merchantProductNo);
                 Console.WriteLine(response.ToString());
+                if (response.IsSuccessStatusCode)
+                {
+                    var product = _requestHandler.GetMerchantProduct(merchantProductNo);
+                    Console.WriteLine($"Successfully updated stock of Product: {product.MerchantProductNo} - {product.Name} - Stock: {product.Stock}");
+                }
             } else
             {
                 Console.WriteLine("Invalid input.");

@@ -1,0 +1,41 @@
+﻿@model IEnumerable<ChannelEngineCore.Entities.Product>
+
+@{
+    ViewData["Title"] = "Top 5 Products Sold Ordered By Quantity";
+}
+<h1>@ViewData["Title"]</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.GTIN)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Quantity)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.GTIN)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Quantity)
+                </td>
+                <td>
+                    <a asp-action="PatchProduct" asp-route-id="@item.MerchantProductNo">Set stock to 25</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

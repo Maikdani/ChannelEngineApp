@@ -1,11 +1,11 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace ChannelEngineCore.Entities
+namespace ChannelEngineWeb.Models
 {
-    public class Order
+    public class OrderViewmodel
     {
         public int Id { get; set; }
         public int ChannelId { get; set; }
@@ -15,9 +15,6 @@ namespace ChannelEngineCore.Entities
         public string ChannelOrderSupport { get; set; }
         public string ChannelOrderNo { get; set; }
         public string Status { get; set; }
-
-        [JsonProperty(PropertyName = "Lines")]
-        public IList<Product> Products { get; set; }
     }
 }
 
