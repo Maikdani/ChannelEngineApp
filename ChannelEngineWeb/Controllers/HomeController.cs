@@ -26,20 +26,21 @@ namespace ChannelEngineWeb.Controllers
             this._requestHandler = requestHandler;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> IndexAsync()
         {
-            var orders = this._requestHandler.GetOrdersInProgressJSON();
+            var orders = await this._requestHandler.GetOrdersInProgressJSONAsync();
             var channelEngineRoot = JsonConvert.DeserializeObject<ChannelEngineRoot<List<OrderViewmodel>>>(orders);
             return View(channelEngineRoot.Content);
         }
 
-        public IActionResult Products()
+        public async Task<IActionResult> ProductsAsync()
         {
-            var products = this._requestHandler.FilterTopXProductsSold(5, this._requestHandler.GetOrdersInProgress());
+            var orders = await this._requestHandler.GetOrdersInProgressAsync();
+            var products = this._requestHandler.FilterTopXProductsSold(5, orders);
             return View(products);
         }
 
-        public IActionResult PatchProduct(string id)
+        public async Task<IActionResult> PatchProductAsync(string id)
         {
             if (id == null)
             {
@@ -48,11 +49,11 @@ namespace ChannelEngineWeb.Controllers
 
             var patchDoc = new JsonPatchDocument<MerchantProduct>();
             patchDoc.Replace(p => p.Stock, 25);
-            var response = _requestHandler.PatchProduct(patchDoc, id);
+            var response = await _requestHandler.PatchProductAsync(patchDoc, id);
 
             if (response.IsSuccessStatusCode)
             {
-                var product = _requestHandler.GetMerchantProduct(id);
+                var product = await _requestHandler.GetMerchantProductAsync(id);
                 return View(product);
             }
 

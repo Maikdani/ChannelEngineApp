@@ -19,11 +19,11 @@ namespace ChannelEngineCore.Services
         public HttpClientRequestHandler()
         { }
 
-        public MerchantProduct GetMerchantProduct(string id)
+        public async Task<MerchantProduct> GetMerchantProductAsync(string id)
         {
             try
             {
-                return JsonConvert.DeserializeObject<ChannelEngineRoot<MerchantProduct>>(_httpClient.GetStringAsync(new Uri($"{RequestConstants.BaseUrl}/products/{id}?apikey={RequestConstants.ApiKey}")).Result).Content;
+                return JsonConvert.DeserializeObject<ChannelEngineRoot<MerchantProduct>>(await _httpClient.GetStringAsync(new Uri($"{RequestConstants.BaseUrl}/products/{id}?apikey={RequestConstants.ApiKey}"))).Content;
             }
             catch (Exception)
             {
@@ -31,11 +31,11 @@ namespace ChannelEngineCore.Services
             }
         } 
 
-        public string GetOrdersInProgressJSON()
+        public async Task<string> GetOrdersInProgressJSONAsync()
         {
             try
             {
-                return _httpClient.GetStringAsync(new Uri($"{RequestConstants.BaseUrl}/orders?statuses=IN_PROGRESS&apikey={RequestConstants.ApiKey}")).Result;
+                return await _httpClient.GetStringAsync(new Uri($"{RequestConstants.BaseUrl}/orders?statuses=IN_PROGRESS&apikey={RequestConstants.ApiKey}"));
             }
             catch (Exception)
             {
@@ -43,9 +43,9 @@ namespace ChannelEngineCore.Services
             }
         }
 
-        public IEnumerable<Order> GetOrdersInProgress()
+        public async Task<IEnumerable<Order>> GetOrdersInProgressAsync()
         {
-            var response = GetOrdersInProgressJSON();
+            var response = await GetOrdersInProgressJSONAsync();
             var channelEngineRoot = JsonConvert.DeserializeObject<ChannelEngineRoot<List<Order>>>(response);
             return channelEngineRoot.Content;
         }
@@ -66,7 +66,7 @@ namespace ChannelEngineCore.Services
             return products;
         }
 
-        public HttpResponseMessage PatchProduct(JsonPatchDocument<MerchantProduct> patchDoc, string merchantProductNo)
+        public async Task<HttpResponseMessage> PatchProductAsync(JsonPatchDocument<MerchantProduct> patchDoc, string merchantProductNo)
         {
             var serializedItemToUpdate = JsonConvert.SerializeObject(patchDoc);
 
@@ -78,7 +78,7 @@ namespace ChannelEngineCore.Services
             };
             try
             {
-                var response = _httpClient.SendAsync(request).Result;
+                var response = await _httpClient.SendAsync(request);
                 return response;
             }
             catch (Exception)
