@@ -14,7 +14,7 @@ namespace ChannelEngineConsoleApp
     public class Program
     {
         private static readonly IRequestHandler _requestHandler = new HttpClientRequestHandler();
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             Program program = new Program();
             DisplayStart();
@@ -27,13 +27,13 @@ namespace ChannelEngineConsoleApp
                     switch (selectedOption)
                     {
                         case 1:
-                            DisplayOrdersInProgressAsync();
+                            await DisplayOrdersInProgressAsync();
                             break;
                         case 2:
-                            DisplayTopFiveProductsSoldAsync();
+                            await DisplayTopFiveProductsSoldAsync();
                             break;
                         case 3:
-                            UpdateStockAsync();
+                            await UpdateStockAsync();
                             break;
                         case 4:
                             Console.Clear();
@@ -82,7 +82,7 @@ namespace ChannelEngineConsoleApp
             var patchDoc = new JsonPatchDocument<MerchantProduct>();
             patchDoc.Replace(p => p.Stock, 25);
             Console.WriteLine("Select product...");
-            List<Product> products = DisplayTopFiveProductsSoldAsync().Result.ToList();
+            List<Product> products = (await DisplayTopFiveProductsSoldAsync()).ToList();
 
             if (int.TryParse(Console.ReadLine(), out int selectedOption) && selectedOption > 0 && selectedOption <= products.Count)
             {
