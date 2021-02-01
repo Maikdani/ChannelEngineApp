@@ -35,7 +35,7 @@ namespace ChannelEngineWeb.Controllers
 
         public IActionResult Products()
         {
-            var products = this._requestHandler.GetTopXProductsSold(5);
+            var products = this._requestHandler.FilterTopXProductsSold(5, this._requestHandler.GetOrdersInProgress());
             return View(products);
         }
 

@@ -13,7 +13,7 @@ namespace ChannelEngineCore.Interfaces
         MerchantProduct GetMerchantProduct(string id);
         string GetOrdersInProgressJSON();
         IEnumerable<Order> GetOrdersInProgress();
-        IEnumerable<Product> GetTopXProductsSold(int takeCount);
+        IEnumerable<Product> FilterTopXProductsSold(int takeCount, IEnumerable<Order> orders);
         HttpResponseMessage PatchProduct(JsonPatchDocument<MerchantProduct> patchDoc, string merchantProductNo);
     }
 }

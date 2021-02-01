@@ -16,7 +16,7 @@ namespace ChannelEngineConsoleApp
         static void Main(string[] args)
         {
             Program program = new Program();
-            program.DisplayStart();
+            DisplayStart();
 
             while (true)
             {
@@ -26,17 +26,17 @@ namespace ChannelEngineConsoleApp
                     switch (selectedOption)
                     {
                         case 1:
-                            program.DisplayOrdersInProgress();
+                            DisplayOrdersInProgress();
                             break;
                         case 2:
-                            program.DisplayTopFiveProductsSold();
+                            DisplayTopFiveProductsSold();
                             break;
                         case 3:
-                            program.UpdateStock();
+                            UpdateStock();
                             break;
                         case 4:
                             Console.Clear();
-                            program.DisplayStart();
+                            DisplayStart();
                             break;
                         default:
                             Console.WriteLine("Not a valid input");
@@ -47,7 +47,7 @@ namespace ChannelEngineConsoleApp
             }
         }
 
-        public void DisplayStart()
+        public static void DisplayStart()
         {
             Console.WriteLine("Select an option:");
             Console.WriteLine("1. Fetch Orders In Progress");
@@ -56,17 +56,17 @@ namespace ChannelEngineConsoleApp
             Console.WriteLine("4. Clear console");
         }
 
-        public void DisplayOrdersInProgress()
+        public static void DisplayOrdersInProgress()
         {
             var json = _requestHandler.GetOrdersInProgressJSON();
             string jsonFormatted = JValue.Parse(json).ToString(Formatting.Indented);
             Console.WriteLine(jsonFormatted);
         }
 
-        public IEnumerable<Product> DisplayTopFiveProductsSold()
+        public static IEnumerable<Product> DisplayTopFiveProductsSold()
         {
             Console.WriteLine("Retrieving top 5 products sold from Orders In Progress by Quantity sold...");
-            var products = _requestHandler.GetTopXProductsSold(5);
+            var products = _requestHandler.FilterTopXProductsSold(5, _requestHandler.GetOrdersInProgress());
             int i = 1;
             foreach(var product in products)
             {
@@ -76,7 +76,7 @@ namespace ChannelEngineConsoleApp
             return products;
         }
 
-        public void UpdateStock()
+        public static void UpdateStock()
         {
             var patchDoc = new JsonPatchDocument<MerchantProduct>();
             patchDoc.Replace(p => p.Stock, 25);

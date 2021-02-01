@@ -1,4 +1,5 @@
-﻿using ChannelEngineCore.Entities;
+﻿using ChannelEngineCore.Constants;
+using ChannelEngineCore.Entities;
 using ChannelEngineCore.Interfaces;
 using Microsoft.AspNetCore.JsonPatch;
 using Newtonsoft.Json;
@@ -14,12 +15,15 @@ namespace ChannelEngineCore.Services
     public class HttpClientRequestHandler : IRequestHandler
     {
         private static readonly HttpClient _httpClient = new HttpClient();
+        
+        public HttpClientRequestHandler()
+        { }
 
         public MerchantProduct GetMerchantProduct(string id)
         {
             try
             {
-                return JsonConvert.DeserializeObject<ChannelEngineRoot<MerchantProduct>>(_httpClient.GetStringAsync(new Uri($"https://api-dev.channelengine.net/api/v2/products/{id}?apikey=541b989ef78ccb1bad630ea5b85c6ebff9ca3322")).Result).Content;
+                return JsonConvert.DeserializeObject<ChannelEngineRoot<MerchantProduct>>(_httpClient.GetStringAsync(new Uri($"{RequestConstants.BaseUrl}/products/{id}?apikey={RequestConstants.ApiKey}")).Result).Content;
             }
             catch (Exception)
             {
@@ -31,7 +35,7 @@ namespace ChannelEngineCore.Services
         {
             try
             {
-                return _httpClient.GetStringAsync(new Uri("https://api-dev.channelengine.net/api/v2/orders?statuses=IN_PROGRESS&apikey=541b989ef78ccb1bad630ea5b85c6ebff9ca3322")).Result;
+                return _httpClient.GetStringAsync(new Uri($"{RequestConstants.BaseUrl}/orders?statuses=IN_PROGRESS&apikey={RequestConstants.ApiKey}")).Result;
             }
             catch (Exception)
             {
@@ -46,10 +50,9 @@ namespace ChannelEngineCore.Services
             return channelEngineRoot.Content;
         }
 
-        public IEnumerable<Product> GetTopXProductsSold(int takeCount)
+        public IEnumerable<Product> FilterTopXProductsSold(int takeCount, IEnumerable<Order> orders)
         {
-            var products = this.GetOrdersInProgress()
-                .SelectMany(order => order.Products)
+            var products = orders.SelectMany(order => order.Products)
                 .GroupBy(product => product.Name)
                 .Select(g => new Product
                 {
@@ -68,7 +71,7 @@ namespace ChannelEngineCore.Services
             var serializedItemToUpdate = JsonConvert.SerializeObject(patchDoc);
 
             var method = new HttpMethod("PATCH");
-            var request = new HttpRequestMessage(method, new Uri($"https://api-dev.channelengine.net/api/v2/products/{merchantProductNo}?apikey=541b989ef78ccb1bad630ea5b85c6ebff9ca3322"))
+            var request = new HttpRequestMessage(method, new Uri($"{RequestConstants.BaseUrl}/products/{merchantProductNo}?apikey={RequestConstants.ApiKey}"))
             {
                 Content = new StringContent(serializedItemToUpdate,
                 Encoding.UTF8, "application/json-patch+json")
@@ -80,7 +83,6 @@ namespace ChannelEngineCore.Services
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
